@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>地震の揺れの伝わり方シミュレーター v1.4.1</title>
+    <title>地震の揺れの伝わり方シミュレーター v1.4.2</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --p-color: #3498db; --s-color: #e67e22; --bg-color: #f0f2f5; --quiz-bg: #fff0f0; }
@@ -14,11 +14,9 @@
         h1 { text-align: center; color: #2c3e50; font-size: 1.4rem; margin-bottom: 15px; }
         .mode-indicator { text-align: center; font-weight: bold; margin-bottom: 10px; padding: 8px; border-radius: 5px; display: none; background: #e74c3c; color: white; }
 
-
         .layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
         .screen { position: relative; width: 100%; height: 160px; background: #222; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 3px solid #444; }
         canvas#simCanvas { width: 100%; height: 100%; }
-
 
         .card { background: #fdfdfd; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; }
         button { width: 100%; padding: 12px; font-size: 0.95rem; cursor: pointer; border: none; border-radius: 8px; background: #2ecc71; color: white; font-weight: bold; margin-bottom: 8px; }
@@ -26,12 +24,10 @@
         .btn-compare { background: #2980b9; }
         .btn-hint { background: #95a5a6; padding: 5px; font-size: 0.8rem; }
 
-
         .result-panel { background: #34495e; color: #fff; padding: 15px; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: bold; font-size: 0.8rem; }
         .val { color: #f1c40f; font-size: 1.1rem; }
         .intensity-tag { grid-column: span 2; text-align: center; border-top: 1px solid #555; padding-top: 10px; }
         #shindo-val { font-size: 1.4rem; color: #ffcc00; }
-
 
         #quiz-answer-area { display: none; text-align: center; padding: 10px; background: #fff; border: 2px dashed #e74c3c; border-radius: 10px; margin-top: 10px; }
         
@@ -43,11 +39,9 @@
 </head>
 <body>
 
-
 <div class="container" id="main-container">
     <div id="mode-text" class="mode-indicator">数値計算クイズ中：震源からの距離を当ててください</div>
-    <h1>地震の揺れの伝わり方シミュレーター v1.4.1</h1>
-
+    <h1>地震の揺れの伝わり方シミュレーター v1.4.2</h1>
 
     <div class="layout">
         <div class="left-col">
@@ -62,19 +56,16 @@
                 <div class="intensity-tag">推定震度: <span id="shindo-val">--</span></div>
             </div>
 
-
             <div id="quiz-answer-area">
                 <h3 style="margin:0 0 10px 0;">震源からの距離は何km？</h3>
                 <input type="number" id="quiz-input" style="padding:10px; width:100px; font-size:1rem;" placeholder="???">
                 <button onclick="checkAnswer()" style="width:auto; padding: 8px 20px; margin-left:10px;">回答</button>
             </div>
 
-
             <div style="height: 380px; margin-top: 15px; background: white; padding: 10px; border-radius: 10px;">
                 <canvas id="travelChart"></canvas>
             </div>
         </div>
-
 
         <div class="right-col">
             <div class="card">
@@ -89,7 +80,6 @@
                 <button class="btn-compare" onclick="startCompareMode()">3地点比較モード</button>
             </div>
 
-
             <div class="card">
                 <button class="btn-hint" onclick="showHint()">計算のヒント</button>
                 <p id="hint-text" style="display:none; font-size: 0.8rem; color: #7f8c8d; margin-top: 5px; font-weight:bold;"></p>
@@ -99,18 +89,15 @@
     </div>
 </div>
 
-
 <script>
-    const VP = 6.0; const VS = 3.0;
+    let VP = 6.0; let VS = 3.0;
     let distance = 360; let magnitude = 6.0;
     let isRunning = false; let quizMode = false; let compareMode = false;
     let animationId = null;
 
-
     const simCanvas = document.getElementById('simCanvas');
     const sCtx = simCanvas.getContext('2d');
     const ctxChart = document.getElementById('travelChart').getContext('2d');
-
 
     const chart = new Chart(ctxChart, {
         type: 'line',
@@ -125,13 +112,11 @@
         }
     });
 
-
     function init() {
         simCanvas.width = simCanvas.offsetWidth; simCanvas.height = simCanvas.offsetHeight;
         resetChart('normal');
         drawStatic(0,0);
     }
-
 
     function resetChart(mode) {
         chart.data.datasets = [];
@@ -153,7 +138,6 @@
         chart.update();
     }
 
-
     function calculateIntensity(m, d) {
         let intensity = 2.0 * m - 4.8 * Math.log10(d) + 2.1;
         if (intensity < 0) return "0";
@@ -168,7 +152,6 @@
         if (intensity < 6.5) return "6強";
         return "7";
     }
-
 
     function drawStatic(pr, sr) {
         sCtx.clearRect(0,0,simCanvas.width, simCanvas.height);
@@ -194,7 +177,6 @@
         if(sr>0) { sCtx.strokeStyle="rgba(230,126,34,0.5)"; sCtx.beginPath(); sCtx.arc(originX,centerY,(sr/currentYMax)*maxW,0,Math.PI*2); sCtx.stroke(); }
     }
 
-
     function clearCounters() {
         document.getElementById('p-arrival').innerText = "0.0";
         document.getElementById('s-arrival').innerText = "0.0";
@@ -202,7 +184,6 @@
         document.getElementById('shindo-val').innerText = "--";
         document.getElementById('feedback').innerText = "";
     }
-
 
     function startSim() {
         compareMode = false;
@@ -212,18 +193,17 @@
         runAnimation(distance);
     }
 
-
     function startCompareMode() {
         compareMode = true; quizMode = false;
         document.getElementById('main-container').classList.remove('quiz-active');
         document.getElementById('mode-text').style.display = 'none';
         document.getElementById('quiz-answer-area').style.display = 'none';
+        VP = 6.0; VS = 3.0; // 比較モードは固定
         if(animationId) cancelAnimationFrame(animationId);
         clearCounters();
         resetChart('compare');
         runAnimation(null);
     }
-
 
     function runAnimation(targetDist) {
         isRunning = true; let startTime = Date.now();
@@ -231,12 +211,10 @@
         document.documentElement.style.setProperty('--amp-p', (ampBase*0.5)+'px');
         document.documentElement.style.setProperty('--amp-s', (ampBase*2.0)+'px');
 
-
         function animate() {
             let elapsed = (Date.now() - startTime) / 1000 * 10;
             const dp = VP * elapsed; const ds = VS * elapsed;
             drawStatic(dp, ds);
-
 
             if (compareMode) {
                 [120, 240, 360].forEach((d, i) => {
@@ -259,7 +237,6 @@
             } else {
                 chart.data.datasets[0].data.push({x:elapsed, y:dp});
                 chart.data.datasets[1].data.push({x:elapsed, y:ds});
-                // クイズモード以外の場合のみ、距離線（赤い破線）を更新
                 if (!quizMode) {
                     chart.data.datasets[2].data = [{x:0, y:targetDist}, {x:240, y:targetDist}];
                 } else {
@@ -268,7 +245,6 @@
                 updateCounters(elapsed, targetDist);
             }
 
-
             chart.update('none');
             if(elapsed >= 240) { isRunning = false; return; }
             if(isRunning) animationId = requestAnimationFrame(animate);
@@ -276,12 +252,10 @@
         animate();
     }
 
-
     function updateCounters(elapsed, dist) {
         const ap = dist/VP; const as = dist/VS;
         const scr = document.getElementById('display-screen');
         const shindoDisp = document.getElementById('shindo-val');
-
 
         if(elapsed < ap) { 
             document.getElementById('p-arrival').innerText = elapsed.toFixed(1); 
@@ -305,7 +279,6 @@
         }
     }
 
-
     function toggleQuiz() {
         quizMode = !quizMode; compareMode = false;
         const container = document.getElementById('main-container');
@@ -316,6 +289,11 @@
             container.classList.add('quiz-active');
             ansArea.style.display = 'block';
             indicator.style.display = 'block';
+            
+            // クイズモード時：速さをランダム化
+            VP = 5.0 + Math.random() * 2.0; // 5.0 - 7.0
+            VS = 3.0 + Math.random() * 1.0; // 3.0 - 4.0
+            
             quizTarget = (Math.floor(Math.random() * 8) + 3) * 60;
             distance = quizTarget;
             document.getElementById('dist-val').innerText = "???";
@@ -324,12 +302,12 @@
             container.classList.remove('quiz-active');
             ansArea.style.display = 'none';
             indicator.style.display = 'none';
+            VP = 6.0; VS = 3.0; // 通常モードは固定
             distance = parseInt(document.getElementById('dist-slider').value);
             document.getElementById('dist-val').innerText = distance;
             init();
         }
     }
-
 
     function checkAnswer() {
         const val = parseInt(document.getElementById('quiz-input').value);
@@ -343,13 +321,11 @@
         }
     }
 
-
     function showHint() {
         const h = document.getElementById('hint-text');
-        h.innerText = "ヒント：初期微動継続時間 × P波の速さ";
+        h.innerText = "グラフから初期微動継続時間が一致する部分を見つけよう";
         h.style.display = 'block';
     }
-
 
     document.getElementById('dist-slider').addEventListener('input', (e) => {
         if(quizMode) return;
@@ -358,15 +334,15 @@
         drawStatic(0,0);
     });
 
-
     document.getElementById('mag-slider').addEventListener('input', (e) => {
         magnitude = parseFloat(e.target.value);
         document.getElementById('mag-val').innerText = magnitude.toFixed(1);
     });
-
 
     window.addEventListener('resize', init);
     init();
 </script>
 </body>
 </html>
+
+
